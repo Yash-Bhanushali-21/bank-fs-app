@@ -28,6 +28,7 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
 
     resetState() {
         this.setState({
+            ...this.state,
             email : "",
             password : "",
             userInfo : null
@@ -41,14 +42,20 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
     }
     async handleLogin() {
       
+        console.log("triggering")
        await getUserInfo({
         username : this.state.email,
         password:  this.state.password
     }).then((data) => {
+        if(data?.error.length) {
+            return;
+        }
+
         this.setState({
             ...this.state,
             userInfo: data
         })
+      
     
        });
 

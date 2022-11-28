@@ -40,9 +40,14 @@ public class ProjectSecurityConfig {
                         config.setMaxAge(3600L);
                         return config;
                     }
-                }).and().csrf().disable().authorizeHttpRequests()
+                }).and()
+                //Ignore the CSRF Config for the below routes.
+                .csrf().ignoringAntMatchers("/contact", "/register")
+                //generate a http (UI) readable cookie for first authenticated req.
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and().authorizeHttpRequests()
                 .antMatchers("/myAccount","/myBalance","/myLoans","/myCards", "/user").authenticated()
-                .antMatchers("/notices","/contact","/register").permitAll()
+                .antMatchers("/notices", "/contact" , "/register").permitAll()
                 .and().formLogin()
                 .and().httpBasic()
         ;

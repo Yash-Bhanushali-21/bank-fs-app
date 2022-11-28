@@ -1,37 +1,19 @@
 
 import { LoginPayloadType } from "src/types/global/types";
 import { appConstants } from "src/constants/appConstants";
+import defaultHttpHeaderConfig from "src/dataFetcher/config/headerConfig";
+import { getCookie } from "typescript-cookie";
+import { XSRFTokenException } from "src/exceptions/XSRFTokenException";
 
-export async function loginWithCredentials (  {username , password} : LoginPayloadType  ) {
-
-  try{
-    const response = await fetch(process.env.REACT_APP_BACKEND_URL+ appConstants.LOGIN_URL, {
-        method: 'POST',
-        mode: 'cors', 
-        cache: 'no-cache',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: new URLSearchParams({
-            'username': username,
-            'password': password,
-        })
-    });
-    return response.json();
-  }
-  catch(ex) {
-    console.log("Something Went Wrong : " + ex.toString());
-  }
-
-
-}
 
 export async function getUserInfo({username, password} : LoginPayloadType) {
 
 
-  let httpHeaders = new Headers();
+  let httpHeaders = defaultHttpHeaderConfig;
+  //sending the Authorization of type Basic, so that it hits Authorization Filter in the BE for first
+  //processing req. of login via. authentication and then getting the info.
   httpHeaders.append('Authorization', 'Basic ' + window.btoa(username + ':' + password));
+
 
 
   try{
@@ -39,6 +21,16 @@ export async function getUserInfo({username, password} : LoginPayloadType) {
         credentials: 'include',  
         headers : httpHeaders
     });
+
+      //store the XSRF token in session storage.
+      const xsrf = getCookie("XSRF-TOKEN");
+      if(xsrf) {
+        window.sessionStorage.setItem("XSRF-TOKEN" , xsrf);
+      }
+      else {
+       throw XSRFTokenException("not found!")
+      }
+
    
     return response.json();
   }
@@ -59,6 +51,7 @@ export async function logout() {
           mode: 'cors', 
           cache: 'no-cache',
           credentials: 'include',
+          headers : defaultHttpHeaderConfig
           
       });
      
@@ -70,3 +63,40 @@ export async function logout() {
   
   
   }
+
+
+//Presently Dyfunct loginWithCredentials()
+
+export async function loginWithCredentials (  {username , password} : LoginPayloadType  ) {
+
+
+  let httpHeaderConfig  = new Headers();
+  httpHeaderConfig.append("Content-Type" , "application/x-www-form-urlencoded;charset=UTF-8");
+
+  console.log("HERE");
+
+
+  try{
+    const response = await fetch(process.env.REACT_APP_BACKEND_URL+ appConstants.LOGIN_URL, {
+
+        method: 'POST',
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: httpHeaderConfig,
+        body: new URLSearchParams({
+            'username': username,
+            'password': password,
+        })
+    });
+
+    
+
+    return response.json();
+  }
+  catch(ex) {
+    console.log("Something Went Wrong : " + ex.toString());
+  }
+
+
+}
