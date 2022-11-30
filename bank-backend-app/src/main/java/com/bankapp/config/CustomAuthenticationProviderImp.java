@@ -1,5 +1,6 @@
 package com.bankapp.config;
 
+import com.bankapp.model.Authority;
 import com.bankapp.model.Customer;
 import com.bankapp.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Component
@@ -35,9 +37,8 @@ public class CustomAuthenticationProviderImp implements AuthenticationProvider {
         List<Customer> customer = customerRepository.findByEmail(username);
         if (customer.size() > 0) {
             if (passwordEncoder.matches(pwd, customer.get(0).getPwd())) {
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-                return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
+                System.out.println(customer.get(0).getAuthorities());
+                return new UsernamePasswordAuthenticationToken(username, pwd, this.getAuthorities(customer.get(0).getAuthorities()));
             } else {
                 throw new BadCredentialsException("Invalid password!");
             }
@@ -45,6 +46,19 @@ public class CustomAuthenticationProviderImp implements AuthenticationProvider {
             throw new BadCredentialsException("No user registered with this details!");
         }
     }
+
+    //get all the authorities from db and typecast them to array of GrantedAuthorities.
+    public List<GrantedAuthority> getAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        if(authorities.size() > 0) {
+            System.out.println(authorities);
+            for(Authority authority : authorities ) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+            }
+        }
+        return grantedAuthorities;
+    }
+
 
     @Override
     public boolean supports(Class<?> authentication) {

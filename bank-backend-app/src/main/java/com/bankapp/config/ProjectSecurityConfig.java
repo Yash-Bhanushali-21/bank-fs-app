@@ -46,7 +46,11 @@ public class ProjectSecurityConfig {
                 //generate a http (UI) readable cookie for first authenticated req.
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().authorizeHttpRequests()
-                .antMatchers("/myAccount","/myBalance","/myLoans","/myCards", "/user").authenticated()
+                .antMatchers("/myAccount").hasAuthority("VIEWACCOUNT")
+                .antMatchers("/myBalance").hasAnyAuthority("VIEWACCOUNT","VIEWBALANCE")
+                .antMatchers("/myLoans").hasAuthority("VIEWLOANS")
+                .antMatchers("/myCards").hasAuthority("VIEWCARDS")
+                .antMatchers( "/user").authenticated()
                 .antMatchers("/notices", "/contact" , "/register").permitAll()
                 .and().formLogin()
                 .and().httpBasic()
