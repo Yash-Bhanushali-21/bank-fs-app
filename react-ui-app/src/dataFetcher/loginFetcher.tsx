@@ -9,7 +9,7 @@ import { XSRFTokenException } from "src/exceptions/XSRFTokenException";
 export async function getUserInfo({username, password} : LoginPayloadType) {
 
 
-  let httpHeaders = defaultHttpHeaderConfig;
+  let httpHeaders = new Headers();
   //sending the Authorization of type Basic, so that it hits Authorization Filter in the BE for first
   //processing req. of login via. authentication and then getting the info.
   httpHeaders.append('Authorization', 'Basic ' + window.btoa(username + ':' + password));
@@ -30,6 +30,14 @@ export async function getUserInfo({username, password} : LoginPayloadType) {
       else {
        throw XSRFTokenException("not found!")
       }
+
+      //get the response JWT token and store it.
+      let JwtToken= response.headers.get("Authorization");
+      if(JwtToken) {
+        window.sessionStorage.setItem("Authorization", JwtToken);
+      }
+
+      console.log(response.json())
 
    
     return response.json();

@@ -22,9 +22,6 @@ class LoanPage extends React.Component<any,any> {
     }
 
 
-
-
-
     render() {
         return (<div className={styles.container}>
             {this.state.message}
