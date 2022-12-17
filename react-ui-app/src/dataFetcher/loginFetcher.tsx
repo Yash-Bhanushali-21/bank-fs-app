@@ -37,7 +37,7 @@ export async function getUserInfo({username, password} : LoginPayloadType) {
         window.sessionStorage.setItem("Authorization", JwtToken);
       }
 
-      console.log(response.json())
+      //response.json().then(data => console.log(data))
 
    
     return response.json();
@@ -71,7 +71,25 @@ export async function logout() {
   
   
   }
+//  .logoutSuccessUrl("http://localhost:8080/authorization-logout")
+export async function logoutFromAuthServer() {
 
+
+  try{
+      await fetch(process.env.REACT_APP_BACKEND_URL+ "/authorization-logout", {
+        method: 'get',
+        credentials : "include",
+        mode: "no-cors"
+        //headers: defaultHttpHeaderConfig
+    });
+   
+  }
+  catch(ex) {
+    console.log("User Not Found : " + ex.toString());
+  }
+
+
+}
 
 //Presently Dyfunct loginWithCredentials()
 
@@ -108,3 +126,66 @@ export async function loginWithCredentials (  {username , password} : LoginPaylo
 
 
 }
+
+
+
+export async function getUser () {
+
+
+//  let httpHeaderConfig  = defaultHttpHeaderConfig;
+
+
+
+  try{
+    const response = await fetch(process.env.REACT_APP_BACKEND_URL+ "/user", {
+        method: 'get',
+        credentials: 'include',
+      //  headers: httpHeaderConfig,
+       
+    });
+
+    
+
+    return response.json();
+  }
+  catch(ex) {
+    console.log("Something Went Wrong : " + ex.toString());
+  }
+
+
+}
+
+export async function logUserOut () {
+
+
+  let headerConfig = new Headers();
+  let xsrf = sessionStorage.getItem("XSRF-TOKEN")
+
+  if(xsrf) headerConfig.append("X-XSRF-TOKEN" , xsrf);
+  sessionStorage.clear();
+
+  
+  
+  
+    try{
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL+ "/logout", {
+          method: 'post',
+          credentials: 'include',
+          headers: headerConfig,
+         
+      });
+  
+      
+  
+      return response.json();
+    }
+    catch(ex) {
+      console.log("Something Went Wrong : " + ex.toString());
+    }
+  
+  
+  }
+
+
+
+

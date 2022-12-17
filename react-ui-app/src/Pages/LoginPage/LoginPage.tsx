@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./styles/loginpage.module.css";
-import {  getUserInfo , logout} from "src/dataFetcher/loginFetcher";
+import {  getUserInfo , logout , logoutFromAuthServer} from "src/dataFetcher/loginFetcher";
 import {UserInfoType} from "src/types/global/types";
 
 type LoginPageStateProps = {
@@ -36,7 +36,8 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
     }
 
     async handleLogout() {
-     logout();
+      logout();
+      logoutFromAuthServer();
      this.resetState();
        
     }
@@ -46,14 +47,12 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
        await getUserInfo({
         username : this.state.email,
         password:  this.state.password
-    }).then((data) => {
-        if(data?.error.length) {
-            return;
-        }
-
+    }).then((res) => {
+        
+        console.log(res.data)
         this.setState({
             ...this.state,
-            userInfo: data
+            userInfo: res.data
         })
       
     
@@ -83,6 +82,8 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
             <input placeholder="email" onChange={this.onEmailChange}/>
             <input placeholder="password" onChange={this.onPasswordChange} />
             <button onClick={this.handleLogin}>Login</button>
+
+            <a href="http://localhost:8080/oauth2/authorization/google">Google</a>
 
             <div>
                 {this.state.userInfo && (

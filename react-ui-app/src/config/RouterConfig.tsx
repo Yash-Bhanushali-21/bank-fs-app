@@ -12,6 +12,8 @@ export default class RouterConfig extends React.Component {
             <Router>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
+                    <Route path="/listAll" element={<HomePage />} />
+
                     <Route path="/loans" element={<LoanPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
