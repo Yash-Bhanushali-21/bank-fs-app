@@ -1,4 +1,5 @@
 package com.bankapp.model;
+import com.bankapp.Provider;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +16,17 @@ public class Customer {
     @Column(name = "customer_id")
     private int id;
 
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
     private String name;
 
     private String email;
@@ -30,7 +42,7 @@ public class Customer {
     @Column(name = "create_dt")
     private String createDt;
 
-    @OneToMany(mappedBy="customer",fetch=FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy="customer",fetch=FetchType.EAGER)
     @JsonManagedReference
     private Set<Authority> authorities;
 
