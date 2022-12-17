@@ -2,11 +2,14 @@ import React from "react";
 import styles from "./styles/loginpage.module.css";
 import {  getUserInfo , logout , logoutFromAuthServer} from "src/dataFetcher/loginFetcher";
 import {UserInfoType} from "src/types/global/types";
-
+import classnames from "classnames";
+//@ts-ignore
+import {ReactComponent as GoogleLogo} from "src/images/google_logo.svg";
 type LoginPageStateProps = {
-    email : string,
+        email : string,
     password: string,
-    userInfo : null | UserInfoType
+    userInfo : null | UserInfoType,
+    error : boolean
 }
 
 class LoginPage extends React.Component<any,LoginPageStateProps> {
@@ -14,10 +17,12 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
     constructor(props : any) {
         super(props);
         this.state = {
+            error : false,
             email : "",
             password : "",
             userInfo : null
         }
+
         this.handleLogin = this.handleLogin.bind(this);
         this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onEmailChange = this.onEmailChange.bind(this);
@@ -28,37 +33,43 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
 
     resetState() {
         this.setState({
-            ...this.state,
             email : "",
             password : "",
-            userInfo : null
+            userInfo : null,
+            error:false
         })
     }
 
     async handleLogout() {
       logout();
       logoutFromAuthServer();
-     this.resetState();
+      this.resetState();
+     window.location.href= "http://localhost:3000/login";
+
        
     }
     async handleLogin() {
       
-        console.log("triggering")
        await getUserInfo({
         username : this.state.email,
         password:  this.state.password
     }).then((res) => {
-        
-        console.log(res.data)
-        this.setState({
-            ...this.state,
-            userInfo: res.data
-        })
-      
-    
-       });
+        if(res.status === 200) {
+            this.setState({
+                ...this.state,
+                userInfo: res.data
+            })
+        }
+        else {
+            this.setState({
+                ...this.state,
+                error : true
+            })
+        }
+            
+    })
+ 
 
-       
         
         
         
@@ -77,13 +88,34 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
 
     }
 
-    render() {
-        return (<div className={styles.loginPageContainer}>
-            <input placeholder="email" onChange={this.onEmailChange}/>
-            <input placeholder="password" onChange={this.onPasswordChange} />
-            <button onClick={this.handleLogin}>Login</button>
+ 
 
-            <a href="http://localhost:8080/oauth2/authorization/google">Google</a>
+    render() {
+        const errorClassNames = classnames(styles.error , {
+            [styles.show] : this.state.error
+        })
+        
+        return (<div className={styles.loginPageContainer}>
+            <div className={styles.loginTextContainer}>
+                <span>Sign In</span>
+                <span>Or, Create an Account</span>
+            </div>
+            <div className={styles.bodyContainer}>
+                <input placeholder="email" onChange={this.onEmailChange}/>
+                <input placeholder="password" onChange={this.onPasswordChange} />
+                <div className={errorClassNames}>Wrong Credentials</div>
+                <button onClick={this.handleLogin} className={styles.loginButton}>Sign In</button>
+                <div className={styles.lineSeperator}>
+                    <span className={styles.lineSeperatorContent}>
+                        OR
+                    </span>
+                </div>
+                <a   href={process.env.REACT_APP_BACKEND_URL+"/oauth2/authorization/google"} className={styles.buttonContainer}>
+                    <span><GoogleLogo /></span>
+                    <span>Sign In With Google</span>
+                </a>
+            </div>
+
 
             <div>
                 {this.state.userInfo && (
@@ -94,7 +126,6 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
                 )}
             </div>
             
-           
         </div>)
     }
 }
