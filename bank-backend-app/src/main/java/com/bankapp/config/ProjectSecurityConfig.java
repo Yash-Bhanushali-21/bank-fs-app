@@ -115,7 +115,9 @@ public class ProjectSecurityConfig {
                                         .userInfoEndpoint().userService(this.customOAuth2Service)
                                         .and().successHandler(this.successHandler)
                                         .and()
-                                        .logout(logout -> logout.logoutSuccessHandler(this.oidcLogoutSuccessHandler()));
+                                        .logout(logout -> logout.logoutSuccessHandler(this.oidcLogoutSuccessHandler()))
+                                ;
+
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -140,7 +142,7 @@ public class ProjectSecurityConfig {
 
     private LogoutSuccessHandler oidcLogoutSuccessHandler() {
         OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler = new OidcClientInitiatedLogoutSuccessHandler(this.clientRegistrationRepository);
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/login");
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:3000/login");
         return oidcLogoutSuccessHandler;
     }
 

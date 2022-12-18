@@ -19,42 +19,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("AuthenticationSuccessHandler invoked");
-        CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-
-
-        Collection<? extends GrantedAuthority> authorities = oauthUser.getAuthorities();
-
-        /*
-
-        Map<String, Object> attributes = oauthUser.getAttributes();
-
-        for (Map.Entry<String,Object> entry : attributes.entrySet()){
-            System.out.println(entry.getKey());
-            System.out.println(entry.getValue());
-        }
-
-         for(GrantedAuthority authority : authorities) {
-            System.out.println(authority.getAuthority());
-        }
-
-       */
-
-       // dbRegisterService.processOAuthPostLogin(name,email);
-
-        //send to the main homepage once done.
         response.sendRedirect("http://localhost:3000/");
 
         //super.onAuthenticationSuccess(request,response,authentication);
 
     }
 
-    private  Set<GrantedAuthority> getAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        Set<GrantedAuthority> grantedAuthoritySet = new HashSet<GrantedAuthority>();
 
-        for(GrantedAuthority authority : authorities) {
-            grantedAuthoritySet.add(authority);
-        }
-        return grantedAuthoritySet;
-    }
 
 }

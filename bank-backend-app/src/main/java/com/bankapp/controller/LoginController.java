@@ -1,25 +1,26 @@
 package com.bankapp.controller;
 
 import com.bankapp.Provider;
+import com.bankapp.config.CurrentUser;
 import com.bankapp.config.CustomOAuth2User;
 import com.bankapp.model.Customer;
 import com.bankapp.repository.CustomerRepository;
 import com.bankapp.response.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -105,18 +106,43 @@ public class LoginController {
 
 
     @GetMapping("/user")
-    public ResponseEntity<Object> getUserAfterLogin(HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<Object> getUserAfterLogin(@RequestParam String type , HttpServletRequest request, Authentication auth) {
 
-          List<Customer> customers = customerRepository.findByEmail(authentication.getName());
-             if (customers.size() > 0) {
-                 return  ResponseHandler.generateResponse(HttpStatus.OK, false , "Found Authenticated User",  customers.get(0));
-             }
-             else {
+        List<Customer> customers;
+        try {
 
-                 System.out.println("Something went wrong");
-                 return  ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, true, "User Not Found", new Object());
+               if(Provider.LOCAL.toString().equals(type)) {
+                              //it is a local login.
+                              CurrentUser currUser = (CurrentUser) auth.getPrincipal();
+                   System.out.println(currUser);
 
-             }
+                   customers = customerRepository.findByEmail(currUser.getEmail());
+                          }
+              else {
+                  CustomOAuth2User currUser = (CustomOAuth2User) auth.getPrincipal();
+                   System.out.println(currUser);
+
+                   customers = customerRepository.findByEmail(currUser.getEmail());
+
+              }
+
+
+
+            if (customers.size() > 0) {
+                return  ResponseHandler.generateResponse(HttpStatus.OK, false , "Found Authenticated User",  customers.get(0));
+            }
+            else {
+                System.out.println("No User Found");
+                return  ResponseHandler.generateResponse(HttpStatus.NOT_FOUND, true, "User Not Found", new Object());
+
+            }
+
+        }
+        catch(Exception ex) {
+            System.out.println("Something went wrong");
+            return  ResponseHandler.generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, true, ex.getMessage(), new Object());
+        }
+
 
 
 

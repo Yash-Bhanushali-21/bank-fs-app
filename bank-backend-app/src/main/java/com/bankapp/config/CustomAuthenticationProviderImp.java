@@ -38,7 +38,9 @@ public class CustomAuthenticationProviderImp implements AuthenticationProvider {
         if (customer.size() > 0) {
             if (passwordEncoder.matches(pwd, customer.get(0).getPwd())) {
                 System.out.println(customer.get(0).getAuthorities());
-                return new UsernamePasswordAuthenticationToken(username, pwd, this.getAuthorities(customer.get(0).getAuthorities()));
+               // return new UsernamePasswordAuthenticationToken(new CurrentUser(username, pwd, true ,true ,true,
+             //   true,this.getAuthorities(customer.get(0).getAuthorities())), pwd, this.getAuthorities(customer.get(0).getAuthorities()));
+                return new UsernamePasswordAuthenticationToken(new CurrentUser(username, pwd,this.getAuthorities(customer.get(0).getAuthorities())), pwd, this.getAuthorities(customer.get(0).getAuthorities()));
             } else {
                 throw new BadCredentialsException("Invalid password!");
             }

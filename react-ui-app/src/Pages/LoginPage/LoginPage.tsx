@@ -3,9 +3,12 @@ import styles from "./styles/loginpage.module.css";
 import {  getUserInfo , logout , logoutFromAuthServer} from "src/dataFetcher/loginFetcher";
 import {UserInfoType} from "src/types/global/types";
 import classnames from "classnames";
-import { Link } from "react-router-dom";
+import { Link  } from "react-router-dom";
+
 //@ts-ignore
 import {ReactComponent as GoogleLogo} from "src/images/google_logo.svg";
+import dataStoreConstants from "src/dataStore/dataStoreConstants";
+
 type LoginPageStateProps = {
         email : string,
     password: string,
@@ -60,12 +63,16 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
                 ...this.state,
                 userInfo: res.data
             })
+            sessionStorage.setItem(dataStoreConstants.LOGIN_PROVIDER_KEY , res.data.provider);
+            window.location.href= "http://localhost:3000/";
+
         }
         else {
             this.setState({
                 ...this.state,
                 error : true
             })
+            sessionStorage.clear();
         }
             
     })
@@ -92,14 +99,16 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
  
 
     render() {
+
         const errorClassNames = classnames(styles.error , {
             [styles.show] : this.state.error
         })
+
         
         return (<div className={styles.loginPageContainer}>
             <div className={styles.loginTextContainer}>
                 <span>Sign In</span>
-                <Link to="/register">Or, Create an Account</Link>
+               <span>Or, <Link to="/register">Create</Link> an Account</span>
             </div>
             <div className={styles.bodyContainer}>
                 <input placeholder="email" onChange={this.onEmailChange}/>
@@ -116,8 +125,9 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
                     <span>Sign In With Google</span>
                 </a>
             </div>
-
-
+            {/**
+             * 
+             * 
             <div>
                 {this.state.userInfo && (
                     <>
@@ -126,6 +136,7 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
                     </>
                 )}
             </div>
+             */}
             
         </div>)
     }

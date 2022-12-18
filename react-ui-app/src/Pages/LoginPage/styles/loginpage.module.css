@@ -20,18 +20,16 @@
 }
 /*crete an acc txt*/
 
-.loginTextContainer a {
+.loginTextContainer span {
     font-size: 12px;
     text-decoration: none;
 }
-
-.loginTextContainer a span::after{
-    content: "";
-    display: block;
-    height: 1px;
-    background-color: black;
+.loginTextContainer span a {
+    text-decoration: none;
+    border-bottom: 1px solid black;
 }
-.loginTextContainer a ,.loginTextContainer a,.loginTextContainer a   {color:black}         /* Unvisited link  */
+
+.loginTextContainer span a:visited ,.loginTextContainer span a:hover ,.loginTextContainer span a:active   {color:black}         /* Unvisited link  */
 
 .bodyContainer {
     display: flex;

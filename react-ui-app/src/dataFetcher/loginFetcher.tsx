@@ -4,10 +4,12 @@ import { appConstants } from "src/constants/appConstants";
 import defaultHttpHeaderConfig from "src/dataFetcher/config/headerConfig";
 import { getCookie } from "typescript-cookie";
 import { XSRFTokenException } from "src/exceptions/XSRFTokenException";
+import dataStoreConstants from "src/dataStore/dataStoreConstants";
 
 
 export async function getUserInfo({username, password} : LoginPayloadType) {
 
+  let type = "LOCAL";
 
   let httpHeaders = new Headers();
   //sending the Authorization of type Basic, so that it hits Authorization Filter in the BE for first
@@ -16,8 +18,9 @@ export async function getUserInfo({username, password} : LoginPayloadType) {
 
 
 
+
   try{
-    const response = await fetch(process.env.REACT_APP_BACKEND_URL+appConstants.USER_INFO_URL, {
+    const response = await fetch(process.env.REACT_APP_BACKEND_URL+appConstants.USER_INFO_URL +"?type="+type, {
         credentials: 'include',  
         headers : httpHeaders
     });
@@ -132,12 +135,12 @@ export async function loginWithCredentials (  {username , password} : LoginPaylo
 export async function getUser () {
 
 
-//  let httpHeaderConfig  = defaultHttpHeaderConfig;
-
-
+  let type = sessionStorage.getItem(dataStoreConstants.LOGIN_PROVIDER_KEY);
+  if(!type || type.length === 0) type = "GOOGLE"
+  console.log(type)
 
   try{
-    const response = await fetch(process.env.REACT_APP_BACKEND_URL+ "/user", {
+    const response = await fetch(process.env.REACT_APP_BACKEND_URL+ "/user?type=" +type, {
         method: 'get',
         credentials: 'include',
       //  headers: httpHeaderConfig,

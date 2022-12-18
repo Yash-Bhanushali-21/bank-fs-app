@@ -1,14 +1,15 @@
 import React from "react";
 import styles from "./styles/homepage.module.css";
 import { getUser , logUserOut, logoutFromAuthServer} from "src/dataFetcher/loginFetcher";
-import { withCookies } from 'react-cookie';
-
+import classnames from "classnames";
+import { Link } from "react-router-dom";
+import dataStoreConstants from "src/dataStore/dataStoreConstants";
 
 type HomePageState = {
     user : any,
 }
 type HomePageProps = {
-    cookies : any
+  
 }
 
 class HomePage extends React.Component<HomePageProps,HomePageState> {
@@ -22,9 +23,14 @@ class HomePage extends React.Component<HomePageProps,HomePageState> {
     }
 
     async handleLogout() {
-        await logoutFromAuthServer();
+        
+        if(sessionStorage.getItem(dataStoreConstants.LOGIN_PROVIDER_KEY) === "GOOGLE"){
+            //trigger a logout request from the authorization server.
+            await logoutFromAuthServer();
+        }
         try{
             await logUserOut();
+            sessionStorage.clear();
         }
         catch(e) {
             console.log(e);
@@ -40,11 +46,15 @@ class HomePage extends React.Component<HomePageProps,HomePageState> {
     }
 
     componentDidMount(): void {
+
           getUser().then(response => {
             if(response.status === 200) {
+                console.log(response.data)
                 this.setState({
+                    ...this.state,
                     user : response.data
                 })
+                
             }
         })
       
@@ -52,11 +62,25 @@ class HomePage extends React.Component<HomePageProps,HomePageState> {
 
 
     render() {
+
+
+        const notLoggedInClasses =  classnames(styles.notLoggedIn,{
+            [styles.show] : this.state.user === null
+        })
+        const loggedInClasses =  classnames(styles.loggedIn,{
+            [styles.show] : this.state.user !== null
+        })
+
         return (<div className={styles.homepageContainer}>
-            <span>{this.state?.user?.email ? this.state.user.email : "Logged Out."}</span>
-            {this.state.user && <button onClick={this.handleLogout}>LOGOUT</button>}
-        </div>)
+                    <div className={notLoggedInClasses}>
+                        You are not Signed-In. Click<Link to={"/login"} className={notLoggedInClasses}>here</Link>to Sign-In.
+                    </div>
+                    <div className={loggedInClasses}>
+                        Welcome, {this.state.user ?  this.state.user.email : ""}
+                        <button onClick={this.handleLogout}>Logout</button>
+                    </div>
+               </div>)
     }
 }
 
-export default withCookies(HomePage);
+export default HomePage;
