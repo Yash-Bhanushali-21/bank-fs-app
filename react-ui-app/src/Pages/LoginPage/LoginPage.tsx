@@ -3,6 +3,7 @@ import styles from "./styles/loginpage.module.css";
 import {  getUserInfo , logout , logoutFromAuthServer} from "src/dataFetcher/loginFetcher";
 import {UserInfoType} from "src/types/global/types";
 import classnames from "classnames";
+import { Link } from "react-router-dom";
 //@ts-ignore
 import {ReactComponent as GoogleLogo} from "src/images/google_logo.svg";
 type LoginPageStateProps = {
@@ -98,7 +99,7 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
         return (<div className={styles.loginPageContainer}>
             <div className={styles.loginTextContainer}>
                 <span>Sign In</span>
-                <span>Or, Create an Account</span>
+                <Link to="/register">Or, Create an Account</Link>
             </div>
             <div className={styles.bodyContainer}>
                 <input placeholder="email" onChange={this.onEmailChange}/>

@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./styles/registerpage.module.css";
 import {RegisterUserPayload} from "src/types/global/types";
 import {registerUser} from "src/dataFetcher/registerUser";
-
-
+//@ts-ignore
+import {ReactComponent as GoogleLogo} from "src/images/google_logo.svg";
 
 type RegisterPageProps = {
     
@@ -70,12 +70,26 @@ class RegisterPage extends React.Component<RegisterPageProps,RegisterUserPayload
 
     render() {
         return (
-            <div className={styles.loginPageContainer}>
-                <input onChange={this.onUserNameChange} placeholder="Name"/>
-                <input onChange={this.onPassWordChange} placeholder="Password" />
-                <input onChange={this.onEmailChange} placeholder="Email" />
-                <input onChange={this.onMobileNoChange} placeholder="Mobile" />
-                <button onClick={this.handleSubmit}>Submit</button>
+            <div className={styles.registerContainer}>
+                <div className={styles.registerTextContainer}>
+                    <span>Register</span>
+                </div>
+                <div className={styles.bodyContainer}>
+                    <input onChange={this.onUserNameChange} placeholder="Name"/>
+                    <input onChange={this.onPassWordChange} placeholder="Password" />
+                    <input onChange={this.onEmailChange} placeholder="Email" />
+                    <input onChange={this.onMobileNoChange} placeholder="Mobile" />
+                    <button onClick={this.handleSubmit} className={styles.registerButton}>Register</button>
+                    <div className={styles.lineSeperator}>
+                    <span className={styles.lineSeperatorContent}>
+                        OR
+                    </span>
+                </div>
+                <a   href={process.env.REACT_APP_BACKEND_URL+"/oauth2/authorization/google"} className={styles.buttonContainer}>
+                    <span><GoogleLogo /></span>
+                    <span>Sign In With Google</span>
+                </a>
+                </div>
             </div>
         )
     }

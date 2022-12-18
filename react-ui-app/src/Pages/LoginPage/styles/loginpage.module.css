@@ -20,9 +20,19 @@
 }
 /*crete an acc txt*/
 
-.loginTextContainer span:nth-child(2) {
+.loginTextContainer a {
     font-size: 12px;
+    text-decoration: none;
 }
+
+.loginTextContainer a span::after{
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: black;
+}
+.loginTextContainer a ,.loginTextContainer a,.loginTextContainer a   {color:black}         /* Unvisited link  */
+
 .bodyContainer {
     display: flex;
     flex-direction: column;
@@ -31,6 +41,8 @@
 .bodyContainer input {
     height: 40px;
     padding: 0 20px;
+    border-radius: 5px;
+    border-width: 1px;
 }
 .buttonContainer {
     height: 40px;

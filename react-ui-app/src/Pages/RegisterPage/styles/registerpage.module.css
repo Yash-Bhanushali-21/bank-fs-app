@@ -1,6 +1,84 @@
-.loginPageContainer {
+.registerContainer {
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-family: sans-serif;
+    transform: translate(-50%,-50%);
+}
+.registerTextContainer {
     display: flex;
-    gap : 20px;
     flex-direction: column;
-    padding : 40px;
+    gap:5px;
+    margin-bottom: 20px;
+}
+/*sign in txt*/
+.registerTextContainer span:nth-child(1) {
+    font-size: 22px;
+    font-weight: bold;
+}
+.bodyContainer {
+    display: flex;
+    flex-direction: column;
+    gap : 20px;
+}
+.bodyContainer input {
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 5px;
+    border-width: 1px;
+}
+.registerButton {
+    height: 40px;
+    cursor: pointer;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    border:unset;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+
+}
+.registerButton:hover {
+    opacity: 0.5;
+}
+
+.buttonContainer {
+    height: 40px;
+    border :1px solid black;
+    display: flex;
+    align-items: center;
+    gap:10px;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.5s ease-in;
+    
+}
+.buttonContainer:visited ,.buttonContainer:hover ,.buttonContainer:active   {color:black}         /* Unvisited link  */
+
+.buttonContainer:hover {
+    border-color: white;
+}
+.buttonContainer span svg {
+    position: relative;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+}
+
+.lineSeperator {
+    width: 100%; 
+   text-align: center; 
+   border-bottom: 1px solid #000; 
+   line-height: 0.1em;
+   margin: 10px 0 20px; 
+}
+.lineSeperatorContent {
+  background:#fff; 
+    padding:0 10px; 
+    font-size: 15px;
+    font-weight: bold;
 }
