@@ -95,7 +95,7 @@ public class ProjectSecurityConfig {
             //generate a http (UI) readable cookie for first authenticated req.
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-        //trigger after the login operation. the condition is once when accessing login.
+                //trigger after the login operation. the condition is once when accessing login.
                 .addFilterAfter(new JWTTokenGeneratorFilter() , BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter() , BasicAuthenticationFilter.class)
                 .addFilterBefore(new CustomPreLoginFilter() , OAuth2LoginAuthenticationFilter.class)

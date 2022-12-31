@@ -19,8 +19,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
+    private static final String[] AUTH_WHITELIST = {
+            // -- Swagger UI v2
+            "/swagger-ui/index.html",
+            "/swagger-ui/swagger-ui.css",
+            "/swagger-ui/index.css",
+            "/swagger-ui/swagger-ui-bundle.js",
+            "/swagger-ui/swagger-ui-standalone-preset.js",
+            "/swagger-ui/swagger-initializer.js",
+            "/swagger-ui/swagger-ui.css.map",
+            "/swagger-ui/swagger-ui-bundle.js.map",
+            "/swagger-ui/swagger-ui-standalone-preset.js.map",
+            "/v3/api-docs/swagger-config",
+            "/swagger-ui/favicon-32x32.png",
+            "/v3/api-docs",
+
+    };
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -36,6 +54,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                         .getBody();
                 String username=  String.valueOf(claims.get("username"));
                 String authorities = (String) claims.get("authorities");
+                System.out.println("user name is " + username);
                 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -51,6 +70,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         //do not execute this filter if the path tries to access user.
-        return request.getServletPath().equals("/user") || request.getServletPath().equals("/authorization-logout");
+        String path = request.getServletPath();
+        List ignoringList = Arrays.asList(AUTH_WHITELIST);
+        boolean shouldNotProceedCondition = ignoringList.contains(path);
+
+        return request.getServletPath().equals("/user") || request.getServletPath().equals("/authorization-logout") || shouldNotProceedCondition ;
     }
 }
