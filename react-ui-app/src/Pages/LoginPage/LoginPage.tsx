@@ -58,11 +58,14 @@ class LoginPage extends React.Component<any,LoginPageStateProps> {
         username : this.state.email,
         password:  this.state.password
     }).then((res) => {
+        console.log("response after getUserInfo");
+        console.log(res);
         if(res.status === 200) {
             this.setState({
                 ...this.state,
                 userInfo: res.data
             })
+            console.log("user is logged in.");
             sessionStorage.setItem(dataStoreConstants.LOGIN_PROVIDER_KEY , res.data.provider);
             window.location.href= "http://localhost:3000/";
 

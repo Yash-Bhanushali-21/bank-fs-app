@@ -23,11 +23,11 @@ class HomePage extends React.Component<HomePageProps,HomePageState> {
     }
 
     async handleLogout() {
-        
-        if(sessionStorage.getItem(dataStoreConstants.LOGIN_PROVIDER_KEY) === "GOOGLE"){
-            //trigger a logout request from the authorization server.
-            await logoutFromAuthServer();
-        }
+
+       if(sessionStorage.getItem(dataStoreConstants.LOGIN_PROVIDER_KEY) === "GOOGLE") {
+          await logoutFromAuthServer();
+       }
+
         try{
             await logUserOut();
             sessionStorage.clear();
@@ -49,7 +49,8 @@ class HomePage extends React.Component<HomePageProps,HomePageState> {
 
           getUser().then(response => {
             if(response.status === 200) {
-                console.log(response.data)
+                const data = response.data;
+                sessionStorage.setItem(dataStoreConstants.LOGIN_PROVIDER_KEY ,data.provider);
                 this.setState({
                     ...this.state,
                     user : response.data

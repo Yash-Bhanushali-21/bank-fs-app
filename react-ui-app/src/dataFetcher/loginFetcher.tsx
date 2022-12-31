@@ -57,7 +57,7 @@ export async function logout() {
 
 
     try{
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL+appConstants.LOGOUT_URL, {
+        await fetch(process.env.REACT_APP_BACKEND_URL+appConstants.LOGOUT_URL, {
           method: 'get',
           mode: 'cors', 
           cache: 'no-cache',
@@ -66,7 +66,6 @@ export async function logout() {
           
       });
      
-      return response.json();
     }
     catch(ex) {
       console.log("User Not Found : " + ex.toString());
@@ -78,6 +77,7 @@ export async function logout() {
 export async function logoutFromAuthServer() {
 
 
+  console.log("logging out from authserver");
   try{
       await fetch(process.env.REACT_APP_BACKEND_URL+ "/authorization-logout", {
         method: 'get',
@@ -171,7 +171,7 @@ export async function logUserOut () {
   
   
     try{
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL+ "/logout", {
+      await fetch(process.env.REACT_APP_BACKEND_URL+ "/logout", {
           method: 'post',
           credentials: 'include',
           headers: headerConfig,
@@ -180,7 +180,6 @@ export async function logUserOut () {
   
       
   
-      return response.json();
     }
     catch(ex) {
       console.log("Something Went Wrong : " + ex.toString());
